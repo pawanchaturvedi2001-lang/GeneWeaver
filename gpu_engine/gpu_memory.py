@@ -32,3 +32,4 @@ if __name__ == "__main__":
     print("Numerical DNA:", result)
     print("Data Type:", result.dtype)
     print("Sequence Length:", len(result))
+    print("GPU MEMORY FILE STARTED")
