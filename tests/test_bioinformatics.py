@@ -45,3 +45,31 @@ def test_parse_fasta_extracts_descriptions():
 def test_parse_fasta_file_not_found():
     with pytest.raises(FileNotFoundError):
         parse_fasta("missing_file.fasta")
+
+def test_parse_fasta_detects_duplicate_ids(tmp_path):
+    fasta_file = tmp_path / "duplicate.fasta"
+
+    fasta_file.write_text(
+        ">gene_001 First sequence\n"
+        "ATGC\n"
+        ">gene_001 Duplicate sequence\n"
+        "TTAA\n",
+        encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="Duplicate sequence ID"):
+        parse_fasta(fasta_file)
+
+
+def test_parse_fasta_rejects_empty_sequences(tmp_path):
+    fasta_file = tmp_path / "empty.fasta"
+
+    fasta_file.write_text(
+        ">gene_001 Empty sequence\n"
+        ">gene_002 Valid sequence\n"
+        "ATGC\n",
+        encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="Empty sequence"):
+        parse_fasta(fasta_file)
