@@ -1,3 +1,4 @@
+
 import numpy as np
 
 
@@ -7,7 +8,6 @@ def encode_sequence(sequence):
     """
 
     sequence = sequence.upper()
-
     valid_bases = set("ATGC")
 
     if not sequence:
@@ -19,6 +19,19 @@ def encode_sequence(sequence):
     return np.frombuffer(
         sequence.encode("ascii"),
         dtype=np.uint8
+    )
+
+
+def allocate_gpu_output(size):
+    """
+    Allocate output memory on the CUDA GPU.
+    """
+
+    from numba import cuda
+
+    return cuda.device_array(
+        size,
+        dtype=np.int32
     )
 
 
