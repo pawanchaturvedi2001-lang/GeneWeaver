@@ -73,3 +73,32 @@ def test_parse_fasta_rejects_empty_sequences(tmp_path):
 
     with pytest.raises(ValueError, match="Empty sequence"):
         parse_fasta(fasta_file)
+
+from bioinformatics.sequence_cleaner import clean_dna_sequence
+
+
+def test_clean_dna_sequence_converts_to_uppercase():
+    assert clean_dna_sequence("atgc") == "ATGC"
+
+
+def test_clean_dna_sequence_removes_whitespace():
+    assert clean_dna_sequence("atg c\nca") == "ATGCCA"
+
+
+def test_clean_dna_sequence_accepts_ambiguous_nucleotide():
+    assert clean_dna_sequence("ATGCN") == "ATGCN"
+
+
+def test_clean_dna_sequence_rejects_invalid_characters():
+    with pytest.raises(ValueError, match="Invalid DNA characters"):
+        clean_dna_sequence("ATGX")
+
+
+def test_clean_dna_sequence_rejects_empty_sequence():
+    with pytest.raises(ValueError, match="cannot be empty"):
+        clean_dna_sequence("   ")
+
+
+def test_clean_dna_sequence_rejects_non_string_input():
+    with pytest.raises(TypeError, match="must be a string"):
+        clean_dna_sequence(123)
